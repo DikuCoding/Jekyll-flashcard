@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+    {% include header.html %}
+
+    <div class="flashcards">
+        {% for card in page.detailCard %}
+        <div class="flashcard">
+            <div class="flashcard-inner">
+              <div class="flashcard-front">
+              <p>{{card.front}}</p>
+              </div>
+              <div class="flashcard-back">
+              <p>{{card.back}}</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+    </div>
+    
+</body>
+</html>
+
+
+{{content}}

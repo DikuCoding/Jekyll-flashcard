@@ -1,0 +1,19 @@
+# [
+#   {
+#   front: "My name",
+#   back: "My name is Dikesh"
+# },
+# {
+#   front: "My age",
+#   back: "21"
+# }
+# ]
+flashcards: 
+  - front: "My name"
+    back: "My name is Dikesh"
+
+  - front: "My age"
+    back: "21"
+
+  - front: "Capital city of Nepal"
+    back: "Kathmandu"
