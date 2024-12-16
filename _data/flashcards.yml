@@ -1,31 +1,14 @@
-# [
-#   {
-#   front: "My name",
-#   back: "My name is Dikesh"
-# },
-# {
-#   front: "My age",
-#   back: "21"
-# }
-# ]
-flashcards: 
-  - front: "My name"
-    back: "My name is Dikesh"
-
-  - front: "My age"
-    back: "21"
-
-  - front: "Capital city of Nepal"
-    back: "Kathmandu"
-
-  - front: "Capital city of Nepal"
-    back: "Kathmandu"
-
-  - front: "Capital city of Nepal"
-    back: "Kathmandu"
-
-  - front: "Capital city of Nepal"
-    back: "Kathmandu"
-    
-  - front: "Capital city of Nepal"
-    back: "Kathmandu"
+---
+flashcards:
+- title: Project planning
+  description: This is my first time in trello
+- title: Kickoff meeting
+  description: ''
+- title: DIkesh
+  description: This is my first time in trello
+- title: second try
+  description: second try
+- title: habi
+  description: This is habi pyatha
+- title: For jekyll flashcard
+  description: dynamic content
