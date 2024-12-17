@@ -1,32 +1,41 @@
-<!-- Yo card ko content  ho
-
-{{content}} -->
-
+<!-- Flashcards Page Template -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{{site.baseurl}}/assets/style.css">
+    <title>Flashcards</title>
+    <link rel="stylesheet" href="{{ site.baseurl }}/assets/style.css">
 </head>
 <body>
+    {% include header.html %}
 
-    {% include header.html%}
-     {{content}}
-    <div class="flashcards">
-        {% for card in site.data.flashcards.flashcards%}
-            <div class="flashcard">
-            <div class="flashcard-inner">
-              <div class="flashcard-front">
-                <p>{{card.title}}</p>
-              </div>
-              <div class="flashcard-back">
-                <p>{{card.description}}</p>
-              </div>
+    <main>
+        <h1>Flashcards</h1>
+        
+        {% assign categories = site.data.flashcards.flashcards | group_by: "category" %}
+        
+        {% for category in categories %}
+        <section class="flashcard-category">
+            <h2 class="h2">{{ category.name | capitalize }} Cards</h2>
+            <div class="flashcards">
+                {% for card in category.items %}
+                <div class="flashcard">
+                    <div class="flashcard-inner">
+                        <!-- Front of Flashcard -->
+                        <div class="flashcard-front">
+                            <h3>{{ card.title }}</h3>
+                        </div>
+                        <!-- Back of Flashcard -->
+                        <div class="flashcard-back">
+                            <p>{{ card.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            </div>
+        </section>
         {% endfor %}
-    </div>
-      
+    </main>
+
 </body>
 </html>

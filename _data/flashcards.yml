@@ -2,17 +2,40 @@
 flashcards:
 - title: Project planning
   description: This is my first time in trello
+  category: green
 - title: Kickoff meeting
   description: Meeting of future plans
+  category: green
 - title: DIkesh
   description: This is my first time in trello
+  category: green
 - title: second try
   description: This is second try
+  category: green
 - title: habi pyatha
   description: This is habi pyatha from thimi
+  category: green
 - title: For jekyll flashcard
   description: dynamic content
+  category: green
 - title: Is today summer or winter?
   description: Today is winter-2024/12/16
+  category: green
 - title: What time to wake up?
   description: Wake up in 6am
+  category: yellow
+- title: Tuesday
+  description: today is tuesday
+  category: green
+- title: What is capital of Nepal
+  description: Kathmandu
+  category: green
+- title: Home of Dikesh
+  description: Bhaktapur
+  category: green
+- title: Doing exercise
+  description: Daily workout
+  category: none
+- title: Studying
+  description: Studying for board exam
+  category: orange

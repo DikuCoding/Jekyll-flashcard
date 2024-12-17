@@ -1,92 +1,79 @@
 require 'dotenv/load'
 require 'trello'
 require 'yaml'
-require 'fileutils'
+require 'date'
 
-module Jekyll
-  class ContentCreatorGenerator < Generator
-    safe true
+Trello.configure do |config|
+  config.developer_public_key = ENV['TRELLO_API_KEY']   
+  config.member_token = ENV['TRELLO_TOKEN']      
+end
 
-    def setup
-      @trello_api_key = ENV['TRELLO_API_KEY']
-      @trello_token = ENV['TRELLO_TOKEN']
+class TrelloFlashcardGenerator
+  FLASHCARD_FILE = '_data/flashcards.yml'
+  POSTS_FOLDER = '_posts'
 
-      Trello.configure do |config|
-        config.developer_public_key = @trello_api_key
-        config.member_token = @trello_token
-      end
+  def initialize(board_id)
+    @board_id = board_id
+    @flashcards_data = { 'flashcards' => [] }
+    @categories = {}
+  end
+
+  def fetch_trello_cards
+    board = Trello::Board.find(@board_id)
+    board.cards.each do |card|
+      process_card(card)
     end
+    save_flashcards
+    create_post_files
+  end
 
-    def generate(site)
-      setup
+  private
 
-      # Fetch Trello cards
-      list_id = "675a7f9ea1657613864ffc50" # Replace with your actual list ID
-      cards = Trello::List.find(list_id).cards
+  def process_card(card)
+    title = card.name
+    description = card.desc || "No description provided."
+    label_color = fetch_label_color(card)
 
-      # Paths for flashcards and posts
-      flashcards_file = File.join(site.source, '_data', 'flashcards.yml')
-      posts_dir = File.join(site.source, '_posts')
+    # Organize cards by label color
+    @categories[label_color] ||= []
+    @categories[label_color] << { 'title' => title, 'description' => description }
 
-      # Load existing flashcards data
-      flashcards = File.exist?(flashcards_file) ? YAML.load_file(flashcards_file) : { 'flashcards' => [] }
-      existing_flashcards = flashcards['flashcards']
+    # Add to flashcards.yml format
+    @flashcards_data['flashcards'] << { 'title' => title, 'description' => description, 'category' => label_color }
+  end
 
-      # Track updated flashcards
-      updated_flashcards = []
+  def fetch_label_color(card)
+    card.labels.any? ? card.labels.first.color || 'none' : 'none'
+  end
 
-      # Process each card from Trello
+  def save_flashcards
+    File.open(FLASHCARD_FILE, 'w') { |file| file.write(@flashcards_data.to_yaml) }
+  end
+
+  def create_post_files
+    @categories.each do |category, cards|
+      category_name = category || 'uncategorized'
       cards.each do |card|
-        labels = card.labels.map(&:color)
-        next unless labels.include?("green") # Process only cards with "green" labels
-
-        due_on = card.due&.to_date.to_s
-        slug = card.name.split.join("-").downcase
-        created_on = DateTime.strptime(card.id[0..7].to_i(16).to_s, '%s').to_date.to_s
-        article_date = due_on.empty? ? created_on : due_on
-        post_filename = "#{article_date}-#{slug}.md"
-        post_filepath = File.join(posts_dir, post_filename)
-
-        # Check if card already exists in flashcards.yml
-        existing_card = existing_flashcards.find { |f| f['front'] == card.name }
-
-        # Create or update flashcard and post
-        updated_flashcards << {
-          'title' => card.name,
-          'description' => card.desc
-        }
-
-        # If the card is new or has been updated
-        if existing_card.nil? || existing_card['back'] != card.desc
-          content = <<~POST
-            ---
-            layout: post
-            title: #{card.name}
-            date: #{article_date}
-            ---
-            #{card.desc}
-          POST
-
-          # Write or overwrite the post file
-          File.open(post_filepath, 'w+') { |f| f.write(content) }
-        end
+        create_post_file(category_name, card)
       end
-
-      # Remove deleted flashcards and posts
-      existing_flashcards.each do |existing_card|
-        next if updated_flashcards.any? { |f| f['front'] == existing_card['front'] }
-
-        # Remove the corresponding post file
-        slug = existing_card['title'].split.join("-").downcase
-        post_filename = "#{existing_card['date']}-#{slug}.md"
-        post_filepath = File.join(posts_dir, post_filename)
-
-        FileUtils.rm(post_filepath) if File.exist?(post_filepath)
-      end
-
-      # Update flashcards.yml
-      flashcards['flashcards'] = updated_flashcards
-      File.open(flashcards_file, 'w') { |f| f.write(flashcards.to_yaml) }
     end
   end
+
+  def create_post_file(category, card)
+    post_name = "#{Date.today}-#{card['title'].downcase.gsub(' ', '-')}.md"
+    post_content = <<~POST
+      ---
+      layout: post
+      title: "#{card['title']}"
+      category: "#{category}"
+      ---
+      #{card['description']}
+    POST
+
+    File.open(File.join(POSTS_FOLDER, post_name), 'w') { |file| file.write(post_content) }
+  end
 end
+
+# Run the Generator
+generator = TrelloFlashcardGenerator.new('l8O34Xpg') # Replace with your Trello Board ID
+generator.fetch_trello_cards

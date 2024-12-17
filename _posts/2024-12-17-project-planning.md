@@ -1,7 +1,6 @@
 ---
 layout: post
-title: DIkesh
-date: 2024-12-12
-category: green
+title: "Project planning"
+category: "green"
 ---
 This is my first time in trello
