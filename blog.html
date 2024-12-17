@@ -1,0 +1,17 @@
+---
+layout: default
+title: Blog
+permalink: /blog/
+---
+
+<div class="blog-container">
+  <h1 class="text-center mb-4">Blog</h1>
+  {% for post in site.posts %}
+  <div class="blog-post">
+    <h2>{{ post.title }}</h2>
+    <p><small>Posted on {{ post.date | date: "%B %d, %Y" }}</small></p>
+    <p>{{ post.excerpt }}</p>
+    <a href="{{ post.url }}" class="read-more">Read more →</a>
+  </div>
+  {% endfor %}
+</div>

@@ -36,3 +36,11 @@ plugins:
 
 incremental: false
 
+collections:
+  posts:
+    output: true
+    permalink: /blog/:title/
+
+include:
+  -assets
+

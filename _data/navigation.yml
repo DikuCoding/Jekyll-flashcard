@@ -1,8 +1,6 @@
 - title: Home
   url: /
 
-- title: Detail
-  url: /detail/
+- title: Blog
+  url: /blog/
 
-- title: More
-  url: /more/
